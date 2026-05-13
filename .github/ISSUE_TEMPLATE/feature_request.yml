@@ -1,0 +1,49 @@
+name: "✨ Feature request"
+description: "Proponer una nueva funcionalidad o mejora"
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: problema
+    attributes:
+      label: Problema u oportunidad
+      description: ¿Qué necesidad resuelve?
+      placeholder: Como usuario/equipo, necesito...
+    validations:
+      required: true
+  - type: textarea
+    id: propuesta
+    attributes:
+      label: Propuesta de solución
+      description: Explica la idea principal
+      placeholder: Se propone implementar...
+    validations:
+      required: true
+  - type: textarea
+    id: alcance
+    attributes:
+      label: Alcance
+      description: Incluye lo que sí y lo que no está incluido
+      placeholder: Incluye..., No incluye...
+    validations:
+      required: true
+  - type: textarea
+    id: criterios
+    attributes:
+      label: Criterios de aceptación
+      placeholder: |
+        - [ ] Criterio 1
+        - [ ] Criterio 2
+    validations:
+      required: true
+  - type: dropdown
+    id: prioridad
+    attributes:
+      label: Prioridad
+      options:
+        - Alta
+        - Media
+        - Baja
+    validations:
+      required: true
