@@ -1,0 +1,47 @@
+name: "🐛 Bug report"
+description: "Reportar un error con contexto suficiente para reproducirlo"
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: textarea
+    id: descripcion
+    attributes:
+      label: Descripción del problema
+      description: ¿Qué está fallando?
+      placeholder: Describe el comportamiento actual
+    validations:
+      required: true
+  - type: textarea
+    id: pasos
+    attributes:
+      label: Pasos para reproducir
+      description: Lista clara y ordenada
+      placeholder: |
+        1. Ir a ...
+        2. Ejecutar ...
+        3. Ver error ...
+    validations:
+      required: true
+  - type: textarea
+    id: esperado
+    attributes:
+      label: Comportamiento esperado
+      placeholder: ¿Qué debería pasar?
+    validations:
+      required: true
+  - type: textarea
+    id: evidencia
+    attributes:
+      label: Evidencia
+      description: Logs, stacktrace, capturas, etc.
+      placeholder: Pega aquí la evidencia relevante
+    validations:
+      required: false
+  - type: input
+    id: rama
+    attributes:
+      label: Rama / Commit (opcional)
+      placeholder: main / feature/nombre / hash
+    validations:
+      required: false
