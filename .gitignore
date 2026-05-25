@@ -1,6 +1,91 @@
-Documento.pdf
-
-.vs/
-*.user
-obj/
+# ========================
+# .NET / ASP.NET Core
+# ========================
 bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# NuGet
+*.nupkg
+*.snupkg
+.nuget/
+packages/
+!**/packages/build/
+
+# Publish output
+publish/
+**/publish/
+
+# Test results
+TestResults/
+*.trx
+*.coveragexml
+coverage/
+
+# ========================
+# Visual Studio
+# ========================
+.vs/
+UpgradeLog.htm
+*.aps
+*.ncb
+*.opendb
+*.opensdf
+*.sdf
+*.cachefile
+*.psess
+*.vsp
+*.vspx
+*.sap
+*.bak
+
+# ========================
+# JetBrains Rider
+# ========================
+.idea/
+*.sln.iml
+
+# ========================
+# Secretos y configuración sensible
+# ========================
+# Connection strings, API keys, tokens
+appsettings.Development.json
+appsettings.Local.json
+appsettings.Production.json
+**/secrets.json
+**/*.pfx
+**/*.p12
+**/*.key
+**/*.pem
+.env
+.env.*
+!.env.example
+
+# User Secrets de .NET (guardados localmente por el SDK)
+**/Properties/launchSettings.json
+
+# ========================
+# Sistema operativo
+# ========================
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# ========================
+# Archivos específicos de este repo
+# ========================
+docs/
+UpgradeLog.htm

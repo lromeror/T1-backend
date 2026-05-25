@@ -205,6 +205,30 @@ Infrastructure → Domain, Application
 
 ---
 
+## Configuración Local para Desarrolladores
+
+Cada desarrollador debe crear el archivo `src/BomberosAPI.API/appsettings.Development.json` con sus propias credenciales de Azure SQL. Este archivo **no se sube al repositorio** (está en `.gitignore`).
+
+```json
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=servbomberos2026.database.windows.net;Database=bd_bomberos;User Id=TU_USUARIO;Password=TU_PASSWORD;Encrypt=True"
+  }
+}
+```
+
+Reemplaza `TU_USUARIO` y `TU_PASSWORD` con tus credenciales personales de Azure SQL (ver tabla de equipo al final de este archivo).
+
+> En producción o servidor dedicado, la connection string se configura como variable de entorno directamente en el servidor y no se necesita este archivo.
+
+---
+
 ## Comandos Útiles
 
 ```bash
