@@ -1,2 +1,6 @@
 Documento.pdf
 
+.vs/
+*.user
+obj/
+bin/

@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BomberosAPI.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cb830ba9abe232b4cb48dba6544b61dea56a247f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6ed7ce8f1045c939ca13c5133b3d9930c8b7e166")]
 [assembly: System.Reflection.AssemblyProductAttribute("BomberosAPI.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BomberosAPI.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
