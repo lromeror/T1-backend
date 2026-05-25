@@ -12,12 +12,14 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Scalar.AspNetCore" Version="2.14.14" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="10.1.7" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\BomberosAPI.Application\BomberosAPI.Application.csproj" />
     <ProjectReference Include="..\BomberosAPI.Domain\BomberosAPI.Domain.csproj" />
+    <ProjectReference Include="..\BomberosAPI.Infrastructure\BomberosAPI.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
