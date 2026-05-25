@@ -1,0 +1,23 @@
+using BomberosAPI.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace BomberosAPI.Infrastructure.Persistence.Configurations;
+
+public class BioimpedanceMeasurementConfiguration : IEntityTypeConfiguration<BioimpedanceMeasurement>
+{
+    public void Configure(EntityTypeBuilder<BioimpedanceMeasurement> builder)
+    {
+        builder.ToTable("BioimpedanceMeasurement");
+        builder.HasKey(e => e.BioimpedanceMeasurementId);
+        builder.Property(e => e.BioimpedanceMeasurementId).HasColumnName("bioimpedance_measurement_id");
+        builder.Property(e => e.SessionParticipantId).HasColumnName("session_participant_id");
+        builder.Property(e => e.RegisteredByHealthPersonnelId).HasColumnName("registered_by_health_personnel_id");
+        builder.Property(e => e.WeightKg).HasColumnName("weight_kg").HasPrecision(5, 2);
+        builder.Property(e => e.FatPercentage).HasColumnName("fat_percentage").HasPrecision(4, 2);
+        builder.Property(e => e.MuscleMassKg).HasColumnName("muscle_mass_kg").HasPrecision(5, 2);
+        builder.Property(e => e.BodyWaterPct).HasColumnName("body_water_pct").HasPrecision(4, 2);
+        builder.Property(e => e.BasalMetabolicRate).HasColumnName("basal_metabolic_rate").HasPrecision(7, 2);
+        builder.Property(e => e.TakenAt).HasColumnName("taken_at");
+    }
+}
