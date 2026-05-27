@@ -55,7 +55,6 @@ UpgradeLog.htm
 # Secretos y configuración sensible
 # ========================
 # Connection strings, API keys, tokens
-appsettings.Development.json
 appsettings.Local.json
 appsettings.Production.json
 **/secrets.json
@@ -68,8 +67,6 @@ appsettings.Production.json
 !.env.example
 
 # User Secrets de .NET (guardados localmente por el SDK)
-**/Properties/launchSettings.json
-
 # ========================
 # Sistema operativo
 # ========================
