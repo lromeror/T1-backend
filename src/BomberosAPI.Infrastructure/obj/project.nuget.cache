@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "lvJ2yIk3t7k=",
+  "dgSpecHash": "2pvPnR8nyP4=",
   "success": true,
   "projectFilePath": "C:\\Users\\Luis F. Romero\\source\\repos\\lromeror\\ProyectBomberos_Backend\\src\\BomberosAPI.Infrastructure\\BomberosAPI.Infrastructure.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Luis F. Romero\\.nuget\\packages\\azure.core\\1.47.1\\azure.core.1.47.1.nupkg.sha512",
     "C:\\Users\\Luis F. Romero\\.nuget\\packages\\azure.identity\\1.14.2\\azure.identity.1.14.2.nupkg.sha512",
+    "C:\\Users\\Luis F. Romero\\.nuget\\packages\\fluentvalidation\\12.1.1\\fluentvalidation.12.1.1.nupkg.sha512",
     "C:\\Users\\Luis F. Romero\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\Luis F. Romero\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\8.0.0\\microsoft.bcl.asyncinterfaces.8.0.0.nupkg.sha512",
     "C:\\Users\\Luis F. Romero\\.nuget\\packages\\microsoft.bcl.cryptography\\9.0.4\\microsoft.bcl.cryptography.9.0.4.nupkg.sha512",

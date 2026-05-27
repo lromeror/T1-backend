@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "WMoOlu8U3As=",
+  "dgSpecHash": "UCLSGDOzFdI=",
   "success": true,
   "projectFilePath": "C:\\Users\\Luis F. Romero\\source\\repos\\lromeror\\ProyectBomberos_Backend\\src\\BomberosAPI.Application\\BomberosAPI.Application.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\Luis F. Romero\\.nuget\\packages\\fluentvalidation\\12.1.1\\fluentvalidation.12.1.1.nupkg.sha512"
+  ],
   "logs": []
 }
