@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BomberosAPI.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cb830ba9abe232b4cb48dba6544b61dea56a247f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+38f74c205b3e787e8c28104de2cbc4171365dc23")]
 [assembly: System.Reflection.AssemblyProductAttribute("BomberosAPI.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BomberosAPI.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

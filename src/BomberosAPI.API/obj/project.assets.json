@@ -3627,23 +3627,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\javim\\.nuget\\packages\\": {},
+    "C:\\Users\\Luis F. Romero\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\javim\\Documents\\ProyectBomberos_Backend\\src\\BomberosAPI.API\\BomberosAPI.API.csproj",
+      "projectUniqueName": "C:\\Users\\Luis F. Romero\\source\\repos\\lromeror\\ProyectBomberos_Backend\\src\\BomberosAPI.API\\BomberosAPI.API.csproj",
       "projectName": "BomberosAPI.API",
-      "projectPath": "C:\\Users\\javim\\Documents\\ProyectBomberos_Backend\\src\\BomberosAPI.API\\BomberosAPI.API.csproj",
-      "packagesPath": "C:\\Users\\javim\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\javim\\Documents\\ProyectBomberos_Backend\\src\\BomberosAPI.API\\obj\\",
+      "projectPath": "C:\\Users\\Luis F. Romero\\source\\repos\\lromeror\\ProyectBomberos_Backend\\src\\BomberosAPI.API\\BomberosAPI.API.csproj",
+      "packagesPath": "C:\\Users\\Luis F. Romero\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Luis F. Romero\\source\\repos\\lromeror\\ProyectBomberos_Backend\\src\\BomberosAPI.API\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\javim\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Luis F. Romero\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -3659,14 +3659,14 @@
           "framework": "net10.0",
           "targetAlias": "net10.0",
           "projectReferences": {
-            "C:\\Users\\javim\\Documents\\ProyectBomberos_Backend\\src\\BomberosAPI.Application\\BomberosAPI.Application.csproj": {
-              "projectPath": "C:\\Users\\javim\\Documents\\ProyectBomberos_Backend\\src\\BomberosAPI.Application\\BomberosAPI.Application.csproj"
+            "C:\\Users\\Luis F. Romero\\source\\repos\\lromeror\\ProyectBomberos_Backend\\src\\BomberosAPI.Application\\BomberosAPI.Application.csproj": {
+              "projectPath": "C:\\Users\\Luis F. Romero\\source\\repos\\lromeror\\ProyectBomberos_Backend\\src\\BomberosAPI.Application\\BomberosAPI.Application.csproj"
             },
-            "C:\\Users\\javim\\Documents\\ProyectBomberos_Backend\\src\\BomberosAPI.Domain\\BomberosAPI.Domain.csproj": {
-              "projectPath": "C:\\Users\\javim\\Documents\\ProyectBomberos_Backend\\src\\BomberosAPI.Domain\\BomberosAPI.Domain.csproj"
+            "C:\\Users\\Luis F. Romero\\source\\repos\\lromeror\\ProyectBomberos_Backend\\src\\BomberosAPI.Domain\\BomberosAPI.Domain.csproj": {
+              "projectPath": "C:\\Users\\Luis F. Romero\\source\\repos\\lromeror\\ProyectBomberos_Backend\\src\\BomberosAPI.Domain\\BomberosAPI.Domain.csproj"
             },
-            "C:\\Users\\javim\\Documents\\ProyectBomberos_Backend\\src\\BomberosAPI.Infrastructure\\BomberosAPI.Infrastructure.csproj": {
-              "projectPath": "C:\\Users\\javim\\Documents\\ProyectBomberos_Backend\\src\\BomberosAPI.Infrastructure\\BomberosAPI.Infrastructure.csproj"
+            "C:\\Users\\Luis F. Romero\\source\\repos\\lromeror\\ProyectBomberos_Backend\\src\\BomberosAPI.Infrastructure\\BomberosAPI.Infrastructure.csproj": {
+              "projectPath": "C:\\Users\\Luis F. Romero\\source\\repos\\lromeror\\ProyectBomberos_Backend\\src\\BomberosAPI.Infrastructure\\BomberosAPI.Infrastructure.csproj"
             }
           }
         }
