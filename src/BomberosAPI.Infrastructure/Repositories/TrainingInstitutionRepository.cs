@@ -26,6 +26,8 @@ public class TrainingInstitutionRepository : ITrainingInstitutionRepository
         await _db.SaveChangesAsync(cancellationToken);
     }
 
+    public void Update(TrainingInstitution entity) => _db.TrainingInstitutions.Update(entity);
+
     public async Task UpdateAsync(TrainingInstitution entity, CancellationToken cancellationToken = default)
     {
         _db.TrainingInstitutions.Update(entity);

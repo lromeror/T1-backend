@@ -7,9 +7,6 @@ using BomberosAPI.Domain.Repositories;
 using BomberosAPI.Infrastructure.Repositories;
 using BomberosAPI.Infrastructure.Services;
 using FluentValidation;
-using BomberosAPI.Infrastructure.Repositories;
-using BomberosAPI.Infrastructure.Services;
-using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 

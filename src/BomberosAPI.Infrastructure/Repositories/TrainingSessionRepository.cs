@@ -33,6 +33,8 @@ public class TrainingSessionRepository : ITrainingSessionRepository
         await _db.SaveChangesAsync(cancellationToken);
     }
 
+    public void Update(TrainingSession entity) => _db.TrainingSessions.Update(entity);
+
     public async Task UpdateAsync(TrainingSession entity, CancellationToken cancellationToken = default)
     {
         _db.TrainingSessions.Update(entity);

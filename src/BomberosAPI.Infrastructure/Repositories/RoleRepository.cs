@@ -26,6 +26,8 @@ public class RoleRepository : IRoleRepository
         await _db.SaveChangesAsync(cancellationToken);
     }
 
+    public void Update(Role entity) => _db.Roles.Update(entity);
+
     public async Task UpdateAsync(Role entity, CancellationToken cancellationToken = default)
     {
         _db.Roles.Update(entity);

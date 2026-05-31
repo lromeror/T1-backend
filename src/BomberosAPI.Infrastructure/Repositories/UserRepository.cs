@@ -11,7 +11,7 @@ public class UserRepository : IUserRepository
 
     public UserRepository(AppDbContext db) => _db = db;
 
-    public async Task<IReadOnlyList<User>> GetAllAsync(CancellationToken ct = default) =>
+    public async Task<IEnumerable<User>> GetAllAsync(CancellationToken ct = default) =>
         await _db.Users.AsNoTracking().ToListAsync(ct);
 
     public Task<User?> GetByIdAsync(Guid userId, CancellationToken ct = default) =>
@@ -26,9 +26,13 @@ public class UserRepository : IUserRepository
         await _db.SaveChangesAsync(ct);
     }
 
+    public void Update(User user) => _db.Users.Update(user);
+
     public async Task UpdateAsync(User user, CancellationToken ct = default)
     {
         _db.Users.Update(user);
         await _db.SaveChangesAsync(ct);
     }
+
+    public void Delete(User user) => _db.Users.Remove(user);
 }
