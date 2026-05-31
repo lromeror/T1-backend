@@ -1,0 +1,67 @@
+using BomberosAPI.API.Common.Responses;
+using BomberosAPI.Application.Features.Users;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace BomberosAPI.API.Controllers;
+
+[ApiController]
+[Route("api/users")]
+[Authorize]
+public class UsersController : ControllerBase
+{
+    private readonly UserService _userService;
+
+    public UsersController(UserService userService)
+    {
+        _userService = userService;
+    }
+
+    [HttpGet]
+    [ProducesResponseType(typeof(ApiResponse<IReadOnlyList<UserDto>>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetAll(CancellationToken ct)
+    {
+        var users = await _userService.GetAllAsync(ct);
+        return Ok(ApiResponse<IReadOnlyList<UserDto>>.Ok(users));
+    }
+
+    [HttpGet("{id:guid}")]
+    [ProducesResponseType(typeof(ApiResponse<UserDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object?>), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetById(Guid id, CancellationToken ct)
+    {
+        var user = await _userService.GetByIdAsync(id, ct);
+        return Ok(ApiResponse<UserDto>.Ok(user));
+    }
+
+    [HttpPost]
+    [ProducesResponseType(typeof(ApiResponse<UserDto>), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ApiResponse<object?>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<object?>), StatusCodes.Status409Conflict)]
+    public async Task<IActionResult> Create([FromBody] CreateUserRequest request, CancellationToken ct)
+    {
+        var user = await _userService.CreateAsync(request, ct);
+        return CreatedAtAction(nameof(GetById), new { id = user.UserId },
+            ApiResponse<UserDto>.Created(user));
+    }
+
+    [HttpPut("{id:guid}")]
+    [ProducesResponseType(typeof(ApiResponse<UserDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object?>), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateUserRequest request, CancellationToken ct)
+    {
+        var user = await _userService.UpdateAsync(id, request, ct);
+        return Ok(ApiResponse<UserDto>.Ok(user));
+    }
+
+    [HttpPatch("{id:guid}/status")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ApiResponse<object?>), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> SetStatus(Guid id, [FromBody] SetStatusRequest request, CancellationToken ct)
+    {
+        await _userService.SetStatusAsync(id, request.Status, ct);
+        return NoContent();
+    }
+}
+
+public record SetStatusRequest(string Status);

@@ -1,0 +1,13 @@
+using FluentValidation;
+namespace BomberosAPI.Application.Features.Users;
+
+public class CreateUserValidator: AbstractValidator<CreateUserRequest>
+{
+    public CreateUserValidator()
+    {
+        RuleFor(x=> x.InstitutionId).NotEmpty();
+        RuleFor(x=> x.Email).NotEmpty().EmailAddress();
+        RuleFor(x=> x.FirstName).NotEmpty().MaximumLength(100);
+        RuleFor(x=> x.LastName).NotEmpty().MaximumLength(100);
+    }
+}

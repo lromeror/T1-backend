@@ -1,5 +1,12 @@
 using BomberosAPI.Application.Common.Interfaces;
 using BomberosAPI.Application.Features.Auth;
+using BomberosAPI.Application.Features.Institutions;
+using BomberosAPI.Application.Features.Roles;
+using BomberosAPI.Application.Features.Users;
+using BomberosAPI.Domain.Repositories;
+using BomberosAPI.Infrastructure.Repositories;
+using BomberosAPI.Infrastructure.Services;
+using FluentValidation;
 using BomberosAPI.Infrastructure.Repositories;
 using BomberosAPI.Infrastructure.Services;
 using Microsoft.Extensions.Configuration;
@@ -18,6 +25,17 @@ public static class DependencyInjection
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddScoped<IJwtTokenService, JwtTokenService>();
         services.AddScoped<IAuthRepository, AuthRepository>();
+
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<UserService>();
+        services.AddScoped<IValidator<CreateUserRequest>, CreateUserValidator>();
+
+        services.AddScoped<IRoleRepository, RoleRepository>();
+        services.AddScoped<RoleService>();
+
+        services.AddScoped<ITrainingInstitutionRepository, TrainingInstitutionRepository>();
+        services.AddScoped<InstitutionService>();
+        services.AddScoped<IValidator<CreateInstitutionRequest>, CreateInstitutionValidator>();
 
         return services;
     }

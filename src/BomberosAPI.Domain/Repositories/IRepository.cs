@@ -17,6 +17,8 @@ public interface IRepository<T> where T : class
     /// Adds a new entity to the context.
     Task AddAsync(T entity, CancellationToken cancellationToken = default);
 
+    /// Marks an entity as modified and persists the change.
+    Task UpdateAsync(T entity, CancellationToken cancellationToken = default);
     /// Marks an entity as modified.
     void Update(T entity);
 
