@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
@@ -8,6 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.8">
       <PrivateAssets>all</PrivateAssets>
@@ -19,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BomberosAPI.Application\BomberosAPI.Application.csproj" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0" />
     <ProjectReference Include="..\BomberosAPI.Domain\BomberosAPI.Domain.csproj" />
     <ProjectReference Include="..\BomberosAPI.Infrastructure\BomberosAPI.Infrastructure.csproj" />
   </ItemGroup>
