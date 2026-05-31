@@ -7,4 +7,5 @@ public interface IAuthRepository
     Task<User?> FindUserByEmailAsync(string email, CancellationToken ct = default);
     Task<UserCredential?> FindCredentialByUserIdAsync(Guid userId, CancellationToken ct = default);
     Task<IReadOnlyList<string>> GetActiveRoleCodesByUserIdAsync(Guid userId, CancellationToken ct = default);
+    Task UpdateCredentialAsync(UserCredential credential, CancellationToken ct = default);
 }

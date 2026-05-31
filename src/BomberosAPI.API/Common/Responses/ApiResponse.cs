@@ -12,27 +12,19 @@ public class ApiResponse<T>
 
     public static ApiResponse<T> Ok(T data, string? message = null) => new()
     {
-        Success = true,
-        StatusCode = 200,
-        Message = message,
-        Data = data
+        Success = true, StatusCode = 200, Message = message, Data = data
     };
 
     public static ApiResponse<T> Created(T data, string? message = null) => new()
     {
-        Success = true,
-        StatusCode = 201,
-        Message = message ?? "Resource created successfully.",
-        Data = data
+        Success = true, StatusCode = 201,
+        Message = message ?? "Resource created successfully.", Data = data
     };
 
     public static ApiResponse<T> Fail(int statusCode, string message,
         IReadOnlyDictionary<string, string[]>? errors = null) => new()
     {
-        Success = false,
-        StatusCode = statusCode,
-        Message = message,
-        Errors = errors
+        Success = false, StatusCode = statusCode, Message = message, Errors = errors
     };
 }
 
