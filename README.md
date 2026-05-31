@@ -245,6 +245,12 @@ dotnet ef migrations add NombreMigracion --project src/BomberosAPI.Infrastructur
 dotnet ef database update --project src/BomberosAPI.Infrastructure --startup-project src/BomberosAPI.API
 ```
 
+
+```bash
+ dotnet user-secrets set "JwtSettings:SecretKey" "BomberosAPI@2024#Xk9mP2qLvR7nWjT5sYhD3cF8eA1bG6uZ" --project src/BomberosAPI.API
+  dotnet user-secrets set "JwtSettings:Issuer" "BomberosAPI" --project src/BomberosAPI.API
+  dotnet user-secrets set "JwtSettings:Audience" "BomberosAPIClient" --project src/BomberosAPI.API
+```
 ---
 
 ## Equipo de Desarrollo
