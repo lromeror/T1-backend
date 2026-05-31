@@ -1,5 +1,7 @@
 using System.Reflection;
 using BomberosAPI.API.Common.Middleware;
+using BomberosAPI.API.Services;
+using BomberosAPI.Application.Common.Interfaces;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
@@ -22,6 +24,13 @@ public static class ApplicationServiceExtensions
             options.SuppressModelStateInvalidFilter = true;
         });
 
+        return services;
+    }
+
+    public static IServiceCollection AddCurrentUser(this IServiceCollection services)
+    {
+        services.AddHttpContextAccessor();
+        services.AddScoped<ICurrentUserService, CurrentUserService>();
         return services;
     }
 

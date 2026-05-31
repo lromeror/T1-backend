@@ -11,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Infrastructure services (BCrypt, JWT, repositories)
+// Infrastructure (BCrypt, JWT, repositories)
 builder.Services.AddInfrastructure(builder.Configuration);
 
 // Application services
@@ -21,8 +21,11 @@ builder.Services.AddScoped<AuthService>();
 builder.Services.AddControllers();
 builder.Services.AddValidation();
 
-// JWT Authentication + Authorization
+// JWT Authentication + Authorization policies
 builder.Services.AddJwtAuthentication(builder.Configuration);
+
+// ICurrentUserService — lee claims del JWT en cada request
+builder.Services.AddCurrentUser();
 
 // OpenAPI / Scalar
 builder.Services.AddEndpointsApiExplorer();
@@ -30,7 +33,6 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
-// Middleware global de excepciones — debe ir primero
 app.UseGlobalExceptionMiddleware();
 
 if (app.Environment.IsDevelopment())
