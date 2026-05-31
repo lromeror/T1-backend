@@ -1,5 +1,7 @@
 using BomberosAPI.Application.Common.Interfaces;
 using BomberosAPI.Application.Features.Auth;
+using BomberosAPI.Application.Features.Institutions;
+using BomberosAPI.Application.Features.Roles;
 using BomberosAPI.Application.Features.Users;
 using BomberosAPI.Domain.Repositories;
 using BomberosAPI.Infrastructure.Repositories;
@@ -25,6 +27,13 @@ public static class DependencyInjection
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<UserService>();
         services.AddScoped<IValidator<CreateUserRequest>, CreateUserValidator>();
+
+        services.AddScoped<IRoleRepository, RoleRepository>();
+        services.AddScoped<RoleService>();
+
+        services.AddScoped<ITrainingInstitutionRepository, TrainingInstitutionRepository>();
+        services.AddScoped<InstitutionService>();
+        services.AddScoped<IValidator<CreateInstitutionRequest>, CreateInstitutionValidator>();
 
         return services;
     }
