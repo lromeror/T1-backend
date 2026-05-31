@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BomberosAPI.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e2348235592d7ad5719299aed732cfc827060833")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+23bf4ec52f92b42ab0911d73c7b45940eab40346")]
 [assembly: System.Reflection.AssemblyProductAttribute("BomberosAPI.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BomberosAPI.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
