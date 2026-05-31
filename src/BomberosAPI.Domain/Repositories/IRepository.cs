@@ -19,6 +19,8 @@ public interface IRepository<T> where T : class
 
     /// Marks an entity as modified and persists the change.
     Task UpdateAsync(T entity, CancellationToken cancellationToken = default);
+    /// Marks an entity as modified.
+    void Update(T entity);
 
     /// Marks an entity for deletion.
     void Delete(T entity);
