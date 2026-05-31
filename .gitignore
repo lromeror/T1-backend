@@ -86,3 +86,4 @@ $RECYCLE.BIN/
 # ========================
 docs/
 UpgradeLog.htm
+appsettings.Development.json
