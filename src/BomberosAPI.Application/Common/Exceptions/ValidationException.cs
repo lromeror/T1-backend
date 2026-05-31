@@ -6,12 +6,8 @@ public class ValidationException : AppException
 
     public ValidationException(IReadOnlyDictionary<string, string[]> errors)
         : base("One or more validation errors occurred.", 400)
-    {
-        Errors = errors;
-    }
+        => Errors = errors;
 
     public ValidationException(string field, string message)
-        : this(new Dictionary<string, string[]> { { field, [message] } })
-    {
-    }
+        : this(new Dictionary<string, string[]> { { field, [message] } }) { }
 }

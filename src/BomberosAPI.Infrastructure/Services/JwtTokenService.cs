@@ -13,9 +13,7 @@ public class JwtTokenService : IJwtTokenService
     private readonly JwtSettings _settings;
 
     public JwtTokenService(IOptions<JwtSettings> settings)
-    {
-        _settings = settings.Value;
-    }
+        => _settings = settings.Value;
 
     public (string Token, DateTime ExpiresAt) GenerateToken(User user, IReadOnlyList<string> roles)
     {

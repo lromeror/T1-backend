@@ -16,10 +16,8 @@ public class GlobalExceptionMiddleware
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase
     };
 
-    public GlobalExceptionMiddleware(
-        RequestDelegate next,
-        ILogger<GlobalExceptionMiddleware> logger,
-        IHostEnvironment env)
+    public GlobalExceptionMiddleware(RequestDelegate next,
+        ILogger<GlobalExceptionMiddleware> logger, IHostEnvironment env)
     {
         _next = next;
         _logger = logger;
@@ -28,14 +26,8 @@ public class GlobalExceptionMiddleware
 
     public async Task InvokeAsync(HttpContext context)
     {
-        try
-        {
-            await _next(context);
-        }
-        catch (Exception ex)
-        {
-            await HandleExceptionAsync(context, ex);
-        }
+        try { await _next(context); }
+        catch (Exception ex) { await HandleExceptionAsync(context, ex); }
     }
 
     private async Task HandleExceptionAsync(HttpContext context, Exception exception)
@@ -44,14 +36,14 @@ public class GlobalExceptionMiddleware
 
         ApiResponse<object?> response = exception switch
         {
-            AppValidationException validationEx => HandleValidation(context, validationEx),
-            NotFoundException notFoundEx        => HandleAppException(context, notFoundEx),
-            BusinessRuleException businessEx    => HandleAppException(context, businessEx),
-            ConflictException conflictEx        => HandleAppException(context, conflictEx),
-            UnauthorizedException unauthorizedEx => HandleAppException(context, unauthorizedEx),
-            ForbiddenException forbiddenEx      => HandleAppException(context, forbiddenEx),
-            AppException appEx                  => HandleAppException(context, appEx),
-            _                                   => HandleUnexpected(context, exception)
+            AppValidationException vex  => HandleValidation(context, vex),
+            NotFoundException nfex      => HandleAppException(context, nfex),
+            BusinessRuleException brex  => HandleAppException(context, brex),
+            ConflictException cfex      => HandleAppException(context, cfex),
+            UnauthorizedException uex   => HandleAppException(context, uex),
+            ForbiddenException fex      => HandleAppException(context, fex),
+            AppException appEx          => HandleAppException(context, appEx),
+            _                           => HandleUnexpected(context, exception)
         };
 
         await context.Response.WriteAsync(JsonSerializer.Serialize(response, JsonOptions));

@@ -31,13 +31,13 @@ public class AuthService
         {
             var errors = validation.Errors
                 .GroupBy(e => e.PropertyName)
-                .ToDictionary(
-                    g => g.Key,
-                    g => g.Select(e => e.ErrorMessage).ToArray());
+                .ToDictionary(g => g.Key, g => g.Select(e => e.ErrorMessage).ToArray());
             throw new AppValidationException(errors);
         }
 
         var user = await _repo.FindUserByEmailAsync(request.Email, ct);
+
+        // Mismo mensaje para email inexistente y password incorrecta — no revela cual fallo
         if (user is null)
             throw new UnauthorizedException("Invalid credentials.");
 
@@ -45,6 +45,7 @@ public class AuthService
             throw new BusinessRuleException("Account is inactive. Contact your administrator.");
 
         var credential = await _repo.FindCredentialByUserIdAsync(user.UserId, ct);
+
         if (credential is null || !_passwordHasher.Verify(request.Password, credential.PasswordHash))
             throw new UnauthorizedException("Invalid credentials.");
 
@@ -57,4 +58,7 @@ public class AuthService
         return new LoginResult(token, expiresAt, user.UserId, user.Email,
             user.FirstName, user.LastName, roles);
     }
+
+    public string HashPassword(string plainPassword) =>
+        _passwordHasher.Hash(plainPassword);
 }

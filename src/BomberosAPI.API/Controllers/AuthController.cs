@@ -10,12 +10,9 @@ public class AuthController : ControllerBase
 {
     private readonly AuthService _authService;
 
-    public AuthController(AuthService authService)
-    {
-        _authService = authService;
-    }
+    public AuthController(AuthService authService) => _authService = authService;
 
-    /// <summary>Autentica un usuario y retorna un JWT.</summary>
+    /// <summary>Autentica un usuario y retorna un JWT firmado.</summary>
     [HttpPost("login")]
     [ProducesResponseType(typeof(ApiResponse<LoginResult>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object?>), StatusCodes.Status400BadRequest)]

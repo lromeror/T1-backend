@@ -13,9 +13,6 @@ public static class AuthServiceExtensions
         var secretKey = configuration["JwtSettings:SecretKey"]
             ?? throw new InvalidOperationException("JwtSettings:SecretKey is not configured.");
 
-        var issuer   = configuration["JwtSettings:Issuer"];
-        var audience = configuration["JwtSettings:Audience"];
-
         services
             .AddAuthentication(options =>
             {
@@ -29,9 +26,9 @@ public static class AuthServiceExtensions
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey         = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
                     ValidateIssuer           = true,
-                    ValidIssuer              = issuer,
+                    ValidIssuer              = configuration["JwtSettings:Issuer"],
                     ValidateAudience         = true,
-                    ValidAudience            = audience,
+                    ValidAudience            = configuration["JwtSettings:Audience"],
                     ValidateLifetime         = true,
                     ClockSkew                = TimeSpan.Zero
                 };
