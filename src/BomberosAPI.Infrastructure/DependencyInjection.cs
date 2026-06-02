@@ -1,6 +1,7 @@
 using BomberosAPI.Application.Common.Interfaces;
 using BomberosAPI.Application.Features.Auth;
 using BomberosAPI.Application.Features.Institutions;
+using BomberosAPI.Application.Features.Invitations;
 using BomberosAPI.Application.Features.Participants;
 using BomberosAPI.Application.Features.Roles;
 using BomberosAPI.Application.Features.TraineeFirefighters;
@@ -44,6 +45,10 @@ public static class DependencyInjection
         services.AddScoped<ISessionParticipantRepository, SessionParticipantRepository>();
         services.AddScoped<SessionParticipantService>();
         services.AddScoped<IValidator<CreateSessionParticipantRequest>, CreateSessionParticipantValidator>();
+
+        services.AddScoped<IInvitationRepository, InvitationRepository>();
+        services.AddScoped<InvitationService>();
+        services.AddScoped<IValidator<CreateInvitationRequest>, CreateInvitationValidator>();
 
         return services;
     }
