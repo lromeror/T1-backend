@@ -35,6 +35,8 @@ public class TraineeFirefighterService
     public async Task<TraineeFirefighterDto> CreateAsync(CreateTraineeFirefighterRequest request, CancellationToken ct = default)
     {
         var validation = await _createValidator.ValidateAsync(request, ct);
+        if (await _repo.ExistsByApplicantCodeAsync(request.ApplicantCode, ct))
+            throw new ConflictException("Applicant code already in use.");
         if (!validation.IsValid)
         {
             var errors = validation.Errors

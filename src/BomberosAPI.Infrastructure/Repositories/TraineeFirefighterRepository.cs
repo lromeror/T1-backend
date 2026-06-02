@@ -23,6 +23,10 @@ public class TraineeFirefighterRepository : ITraineeFirefighterRepository
     public Task<TraineeFirefighter?> GetByUserIdAsync(Guid userId, CancellationToken ct = default) =>
         _db.TraineeFirefighters.FirstOrDefaultAsync(t => t.UserId == userId, ct);
 
+    public Task<bool> ExistsByApplicantCodeAsync(string applicantCode, CancellationToken ct = default) =>
+        _db.TraineeFirefighters.AnyAsync(t => t.ApplicantCode == applicantCode, ct);
+
+
     public async Task AddAsync(TraineeFirefighter trainee, CancellationToken ct = default)
     {
         _db.TraineeFirefighters.Add(trainee);
