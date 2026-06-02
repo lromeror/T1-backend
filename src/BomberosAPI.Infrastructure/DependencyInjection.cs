@@ -1,5 +1,6 @@
 using BomberosAPI.Application.Common.Interfaces;
 using BomberosAPI.Application.Features.Auth;
+using BomberosAPI.Application.Features.EnvironmentalData;
 using BomberosAPI.Application.Features.HealthPersonnel;
 using BomberosAPI.Application.Features.Institutions;
 using BomberosAPI.Application.Features.Invitations;
@@ -64,6 +65,10 @@ public static class DependencyInjection
         services.AddScoped<IVitalSignsMeasurementRepository, VitalSignsMeasurementRepository>();
         services.AddScoped<VitalSignsMeasurementService>();
         services.AddScoped<IValidator<CreateVitalSignsMeasurementRequest>, CreateVitalSignsMeasurementValidator>();
+
+        services.AddScoped<IEnvironmentalDataRepository, EnvironmentalDataRepository>();
+        services.AddScoped<EnvironmentalDataService>();
+        services.AddScoped<IValidator<CreateEnvironmentalDataRequest>, CreateEnvironmentalDataValidator>();
 
         return services;
     }
