@@ -1,5 +1,6 @@
 using BomberosAPI.Application.Common.Interfaces;
 using BomberosAPI.Application.Features.Auth;
+using BomberosAPI.Application.Features.HealthPersonnel;
 using BomberosAPI.Application.Features.Institutions;
 using BomberosAPI.Application.Features.Invitations;
 using BomberosAPI.Application.Features.Participants;
@@ -49,6 +50,10 @@ public static class DependencyInjection
         services.AddScoped<IInvitationRepository, InvitationRepository>();
         services.AddScoped<InvitationService>();
         services.AddScoped<IValidator<CreateInvitationRequest>, CreateInvitationValidator>();
+
+        services.AddScoped<IHealthPersonnelRepository, HealthPersonnelRepository>();
+        services.AddScoped<HealthPersonnelService>();
+        services.AddScoped<IValidator<CreateHealthPersonnelRequest>, CreateHealthPersonnelValidator>();
 
         return services;
     }
