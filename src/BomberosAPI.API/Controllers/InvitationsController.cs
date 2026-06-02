@@ -1,0 +1,77 @@
+﻿using BomberosAPI.API.Common.Responses;
+using BomberosAPI.Application.Features.Invitations;
+using BomberosAPI.Application.Features.Participants;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace BomberosAPI.API.Controllers;
+
+[ApiController]
+[Route("api/invitations")]
+[Authorize]
+public class InvitationsController : ControllerBase
+{
+    private readonly InvitationService _service;
+
+    public InvitationsController(InvitationService service)
+    {
+        _service = service;
+    }
+
+    [HttpGet]
+    [ProducesResponseType(typeof(ApiResponse<IReadOnlyList<InvitationDto>>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetAll(CancellationToken ct)
+    {
+        var items = await _service.GetAllAsync(ct);
+        return Ok(ApiResponse<IReadOnlyList<InvitationDto>>.Ok(items));
+    }
+
+    [HttpGet("{id:guid}")]
+    [ProducesResponseType(typeof(ApiResponse<InvitationDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object?>), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetById(Guid id, CancellationToken ct)
+    {
+        var invitation = await _service.GetByIdAsync(id, ct);
+        return Ok(ApiResponse<InvitationDto>.Ok(invitation));
+    }
+
+    [HttpPost]
+    [ProducesResponseType(typeof(ApiResponse<CreateInvitationResponse>), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ApiResponse<object?>), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Create([FromBody] CreateInvitationRequest request, CancellationToken ct)
+    {
+        var response = await _service.CreateAsync(request, ct);
+        return CreatedAtAction(nameof(GetById), new { id = response.Invitation.InvitationId },
+            ApiResponse<CreateInvitationResponse>.Created(response));
+    }
+
+    [HttpPost("{id:guid}/accept")]
+    [ProducesResponseType(typeof(ApiResponse<SessionParticipantDto?>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object?>), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ApiResponse<object?>), StatusCodes.Status409Conflict)]
+    public async Task<IActionResult> Accept(Guid id, CancellationToken ct)
+    {
+        var participant = await _service.AcceptAsync(id, ct);
+        return Ok(ApiResponse<SessionParticipantDto?>.Ok(participant));
+    }
+
+    [HttpPost("{id:guid}/reject")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ApiResponse<object?>), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ApiResponse<object?>), StatusCodes.Status409Conflict)]
+    public async Task<IActionResult> Reject(Guid id, CancellationToken ct)
+    {
+        await _service.RejectAsync(id, ct);
+        return NoContent();
+    }
+
+    [HttpPost("{id:guid}/revoke")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ApiResponse<object?>), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ApiResponse<object?>), StatusCodes.Status409Conflict)]
+    public async Task<IActionResult> Revoke(Guid id, CancellationToken ct)
+    {
+        await _service.RevokeAsync(id, ct);
+        return NoContent();
+    }
+}
