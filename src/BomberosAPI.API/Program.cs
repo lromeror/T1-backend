@@ -27,13 +27,17 @@ builder.Services.AddJwtAuthentication(builder.Configuration);
 // ICurrentUserService — lee claims del JWT en cada request
 builder.Services.AddCurrentUser();
 
-// OpenAPI / Scalar
+// OpenAPI / Scalar / Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
 app.UseGlobalExceptionMiddleware();
+
+app.UseSwagger();
+app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BomberosAPI v1"));
 
 if (app.Environment.IsDevelopment())
 {
