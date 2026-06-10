@@ -1,12 +1,16 @@
 using BomberosAPI.Application.Common.Interfaces;
 using BomberosAPI.Application.Features.Auth;
+using BomberosAPI.Application.Features.EnvironmentalData;
+using BomberosAPI.Application.Features.HealthPersonnel;
 using BomberosAPI.Application.Features.Institutions;
 using BomberosAPI.Application.Features.Invitations;
+using BomberosAPI.Application.Features.MedicalHistory;
 using BomberosAPI.Application.Features.Participants;
 using BomberosAPI.Application.Features.Roles;
 using BomberosAPI.Application.Features.TraineeFirefighters;
 using BomberosAPI.Application.Features.TrainingSessions;
 using BomberosAPI.Application.Features.Users;
+using BomberosAPI.Application.Features.VitalSigns;
 using BomberosAPI.Domain.Repositories;
 using BomberosAPI.Infrastructure.Repositories;
 using BomberosAPI.Infrastructure.Services;
@@ -54,6 +58,22 @@ public static class DependencyInjection
         services.AddScoped<IInvitationRepository, InvitationRepository>();
         services.AddScoped<InvitationService>();
         services.AddScoped<IValidator<CreateInvitationRequest>, CreateInvitationValidator>();
+
+        services.AddScoped<IHealthPersonnelRepository, HealthPersonnelRepository>();
+        services.AddScoped<HealthPersonnelService>();
+        services.AddScoped<IValidator<CreateHealthPersonnelRequest>, CreateHealthPersonnelValidator>();
+
+        services.AddScoped<IMedicalHistoryRepository, MedicalHistoryRepository>();
+        services.AddScoped<MedicalHistoryService>();
+        services.AddScoped<IValidator<CreateMedicalHistoryRequest>, CreateMedicalHistoryValidator>();
+
+        services.AddScoped<IVitalSignsMeasurementRepository, VitalSignsMeasurementRepository>();
+        services.AddScoped<VitalSignsMeasurementService>();
+        services.AddScoped<IValidator<CreateVitalSignsMeasurementRequest>, CreateVitalSignsMeasurementValidator>();
+
+        services.AddScoped<IEnvironmentalDataRepository, EnvironmentalDataRepository>();
+        services.AddScoped<EnvironmentalDataService>();
+        services.AddScoped<IValidator<CreateEnvironmentalDataRequest>, CreateEnvironmentalDataValidator>();
 
         return services;
     }
