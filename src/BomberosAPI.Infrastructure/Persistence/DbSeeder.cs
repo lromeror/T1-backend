@@ -59,6 +59,7 @@ public static class DbSeeder
         await SeedTraineesAsync(db);
         var location    = await SeedLocationAsync(db, institution.InstitutionId);
         await SeedSessionsAsync(db, institution.InstitutionId, location.TrainingLocationId);
+        await SeedInvitationsAsync(db);
 
         logger.LogInformation("DbSeeder: done. Password for all test users: {Password}", DefaultPassword);
     }
@@ -319,4 +320,96 @@ public static class DbSeeder
         ActualStart       = status is "InProgress" or "Finished" ? start : null,
         ActualEnd         = status == "Finished" ? end : null,
     };
+
+    // ── Invitations ───────────────────────────────────────────────────────────
+
+    private static async Task SeedInvitationsAsync(AppDbContext db)
+    {
+        if (await db.Invitations.AnyAsync()) return;
+
+        var adminId = await db.Users
+            .Where(u => u.Email == "admin@smab.app")
+            .Select(u => u.UserId)
+            .FirstOrDefaultAsync();
+
+        if (adminId == Guid.Empty) return;
+
+        // Sesiones planificadas para asociar a las invitaciones
+        var sessions = await db.TrainingSessions
+            .Where(s => s.Status == "Scheduled")
+            .OrderBy(s => s.ScheduledStart)
+            .Take(3)
+            .ToListAsync();
+
+        if (sessions.Count == 0) return;
+
+        var sessionG1 = sessions[0];
+        var sessionG3 = sessions.Count > 1 ? sessions[1] : sessions[0];
+        var sessionG4 = sessions.Count > 2 ? sessions[2] : sessions[0];
+
+        var now = DateTime.UtcNow;
+
+        // Invitaciones para personal médico (aparecen en ValidationQueue del médico)
+        var healthInvites = new[]
+        {
+            ("enfermera@smab.app",     sessionG1.TrainingSessionId, now.AddHours(-2)),
+            ("nutricionista@smab.app", sessionG1.TrainingSessionId, now.AddHours(-4)),
+            ("medico2@smab.app",       sessionG3.TrainingSessionId, now.AddHours(-5)),
+            ("enfermera@smab.app",     sessionG4.TrainingSessionId, now.AddHours(-6)),
+        };
+
+        foreach (var (email, sessionId, createdAt) in healthInvites)
+        {
+            var targetUser = await db.Users
+                .Where(u => u.Email == email)
+                .Select(u => (Guid?)u.UserId)
+                .FirstOrDefaultAsync();
+
+            db.Invitations.Add(new Invitation
+            {
+                InvitationId       = Guid.NewGuid(),
+                SenderUserId       = adminId,
+                TargetUserId       = targetUser,
+                TrainingSessionId  = sessionId,
+                TargetEmail        = email,
+                InvitationTokenHash = Guid.NewGuid().ToString("N"),
+                Status             = "Pending",
+                ExpiresAt          = now.AddDays(7),
+                CreatedAt          = createdAt,
+            });
+        }
+
+        // Invitaciones para bomberos aspirantes (aparecen en TraineeDashboard)
+        var traineeInvites = new[]
+        {
+            ("bombero@smab.app",  sessionG1.TrainingSessionId, now.AddHours(-2)),
+            ("bombero2@smab.app", sessionG3.TrainingSessionId, now.AddHours(-3)),
+            ("bombero3@smab.app", sessionG1.TrainingSessionId, now.AddHours(-4)),
+            ("bombero4@smab.app", sessionG4.TrainingSessionId, now.AddHours(-5)),
+            ("bombero5@smab.app", sessionG3.TrainingSessionId, now.AddHours(-6)),
+        };
+
+        foreach (var (email, sessionId, createdAt) in traineeInvites)
+        {
+            var targetUser = await db.Users
+                .Where(u => u.Email == email)
+                .Select(u => (Guid?)u.UserId)
+                .FirstOrDefaultAsync();
+
+            db.Invitations.Add(new Invitation
+            {
+                InvitationId       = Guid.NewGuid(),
+                SenderUserId       = adminId,
+                TargetUserId       = targetUser,
+                TrainingSessionId  = sessionId,
+                TargetEmail        = email,
+                InvitationTokenHash = Guid.NewGuid().ToString("N"),
+                Status             = "Pending",
+                ExpiresAt          = now.AddDays(7),
+                CreatedAt          = createdAt,
+            });
+        }
+
+        await db.SaveChangesAsync();
+    }
 }
