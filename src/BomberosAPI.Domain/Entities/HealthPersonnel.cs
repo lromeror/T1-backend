@@ -8,4 +8,6 @@ public class HealthPersonnel
     public string? Specialty { get; set; }
     public string? LicenseNumber { get; set; }
     public bool CanApproveDischarges { get; set; } = false;
+
+    public User? User { get; set; }
 }

@@ -14,7 +14,7 @@ public static class DbSeeder
 {
     private const string DefaultPassword = "Smab2026!";
 
-    private static readonly (string Code, string Name) [] SeedRoles =
+    private static readonly (string Code, string Name)[] SeedRoles =
     [
         (Roles.SystemAdmin,        "System Administrator"),
         (Roles.Admin,              "Administrator"),
@@ -22,16 +22,25 @@ public static class DbSeeder
         (Roles.FirefighterTrainee, "Firefighter Trainee"),
         (Roles.Capacitator,        "Capacitator / Instructor"),
         (Roles.Researcher,         "Researcher"),
+        (Roles.FireChief,          "Fire Chief"),
     ];
 
-    private static readonly (string Email, string First, string Last, string RoleCode)[] SeedUsers =
+    private static readonly (string Email, string First, string Last, string RoleCode, string? Phone)[] SeedUsers =
     [
-        ("sysadmin@smab.app",   "Admin",    "Sistema",   Roles.SystemAdmin),
-        ("admin@smab.app",      "Sara",     "Flores",    Roles.Admin),
-        ("medico@smab.app",     "Michael",  "Poveda",    Roles.Medical),
-        ("bombero@smab.app",    "Carlos",   "Ruiz",      Roles.FirefighterTrainee),
-        ("capacitador@smab.app","Luis",     "Herrera",   Roles.Capacitator),
-        ("investigador@smab.app","Ana",     "Torres",    Roles.Researcher),
+        ("sysadmin@smab.app",       "Admin",    "Sistema",    Roles.SystemAdmin,        null),
+        ("admin@smab.app",          "Sara",     "Flores",     Roles.Admin,              null),
+        ("medico@smab.app",         "Michael",  "Poveda",     Roles.Medical,            "+593 99-100-0001"),
+        ("enfermera@smab.app",      "Valeria",  "Castro",     Roles.Medical,            "+593 99-100-0002"),
+        ("nutricionista@smab.app",  "Andrea",   "Rivas",      Roles.Medical,            "+593 99-100-0003"),
+        ("medico2@smab.app",        "Daniel",   "Ortega",     Roles.Medical,            "+593 99-100-0004"),
+        ("bombero@smab.app",        "Carlos",   "Ruiz",       Roles.FirefighterTrainee, "+593 98-200-0001"),
+        ("bombero2@smab.app",       "Marco",    "Torres",     Roles.FirefighterTrainee, "+593 98-200-0002"),
+        ("bombero3@smab.app",       "Sara",     "Vega",       Roles.FirefighterTrainee, "+593 98-200-0003"),
+        ("bombero4@smab.app",       "Luis",     "Paredes",    Roles.FirefighterTrainee, "+593 98-200-0004"),
+        ("bombero5@smab.app",       "Diego",    "Carrillo",   Roles.FirefighterTrainee, "+593 98-200-0005"),
+        ("capacitador@smab.app",    "Luis",     "Herrera",    Roles.Capacitator,        null),
+        ("investigador@smab.app",   "Ana",      "Torres",     Roles.Researcher,         null),
+        ("jefe@smab.app",           "Roberto",  "Mendoza",    Roles.FireChief,          null),
     ];
 
     public static async Task SeedAsync(IServiceProvider services)
@@ -46,6 +55,8 @@ public static class DbSeeder
         var institution = await SeedInstitutionAsync(db);
         var roleMap     = await SeedRolesAsync(db);
         await SeedUsersAsync(db, hasher, institution.InstitutionId, roleMap);
+        await SeedHealthPersonnelAsync(db);
+        await SeedTraineesAsync(db);
         var location    = await SeedLocationAsync(db, institution.InstitutionId);
         await SeedSessionsAsync(db, institution.InstitutionId, location.TrainingLocationId);
 
@@ -113,7 +124,7 @@ public static class DbSeeder
             .Select(u => u.Email)
             .ToHashSetAsync();
 
-        foreach (var (email, first, last, roleCode) in SeedUsers)
+        foreach (var (email, first, last, roleCode, phone) in SeedUsers)
         {
             if (existingEmails.Contains(email)) continue;
 
@@ -126,6 +137,7 @@ public static class DbSeeder
                 Email         = email,
                 FirstName     = first,
                 LastName      = last,
+                Phone         = phone,
                 AccountStatus = "active",
                 CreatedAt     = DateTime.UtcNow,
             });
@@ -150,6 +162,81 @@ public static class DbSeeder
                     IsActive   = true,
                 });
             }
+        }
+
+        await db.SaveChangesAsync();
+    }
+
+    // ── Health Personnel ──────────────────────────────────────────────────────
+
+    private static async Task SeedHealthPersonnelAsync(AppDbContext db)
+    {
+        if (await db.HealthPersonnel.AnyAsync()) return;
+
+        var hpData = new[]
+        {
+            ("medico@smab.app",        "Médico",        "Cardiología",   "MED-001", true),
+            ("enfermera@smab.app",     "Enfermero",     "Urgencias",     "ENF-001", false),
+            ("nutricionista@smab.app", "Nutricionista", "Deportiva",     "NUT-001", false),
+            ("medico2@smab.app",       "Médico",        "Medicina General", "MED-002", false),
+        };
+
+        var hpEmails  = hpData.Select(h => h.Item1).ToList();
+        var userIdMap = await db.Users
+            .Where(u => hpEmails.Contains(u.Email))
+            .ToDictionaryAsync(u => u.Email, u => u.UserId);
+
+        foreach (var (email, profession, specialty, license, canApprove) in hpData)
+        {
+            if (!userIdMap.TryGetValue(email, out var userId)) continue;
+
+            db.HealthPersonnel.Add(new HealthPersonnel
+            {
+                HealthPersonnelId  = Guid.NewGuid(),
+                UserId             = userId,
+                Profession         = profession,
+                Specialty          = specialty,
+                LicenseNumber      = license,
+                CanApproveDischarges = canApprove,
+            });
+        }
+
+        await db.SaveChangesAsync();
+    }
+
+    // ── Trainee Firefighters ──────────────────────────────────────────────────
+
+    private static async Task SeedTraineesAsync(AppDbContext db)
+    {
+        if (await db.TraineeFirefighters.AnyAsync()) return;
+
+        var traineeData = new[]
+        {
+            ("bombero@smab.app",  "BOM-2026-001", "M", "O+"),
+            ("bombero2@smab.app", "BOM-2026-002", "M", "A+"),
+            ("bombero3@smab.app", "BOM-2026-003", "F", "B+"),
+            ("bombero4@smab.app", "BOM-2026-004", "M", "AB+"),
+            ("bombero5@smab.app", "BOM-2026-005", "M", "O-"),
+        };
+
+        var traineeEmails = traineeData.Select(t => t.Item1).ToList();
+        var userIdMap     = await db.Users
+            .Where(u => traineeEmails.Contains(u.Email))
+            .ToDictionaryAsync(u => u.Email, u => u.UserId);
+
+        foreach (var (email, code, sex, blood) in traineeData)
+        {
+            if (!userIdMap.TryGetValue(email, out var userId)) continue;
+
+            db.TraineeFirefighters.Add(new TraineeFirefighter
+            {
+                TraineeFirefighterId = Guid.NewGuid(),
+                UserId               = userId,
+                ApplicantCode        = code,
+                Sex                  = sex,
+                BloodType            = blood,
+                TrainingStatus       = "Active",
+            });
         }
 
         await db.SaveChangesAsync();

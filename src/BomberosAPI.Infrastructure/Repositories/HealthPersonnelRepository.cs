@@ -12,10 +12,10 @@ public class HealthPersonnelRepository : IHealthPersonnelRepository
     public HealthPersonnelRepository(AppDbContext db) => _db = db;
 
     public async Task<IEnumerable<HealthPersonnel>> GetAllAsync(CancellationToken ct = default) =>
-        await _db.HealthPersonnel.AsNoTracking().ToListAsync(ct);
+        await _db.HealthPersonnel.Include(h => h.User).AsNoTracking().ToListAsync(ct);
 
     public Task<HealthPersonnel?> GetByIdAsync(Guid id, CancellationToken ct = default) =>
-        _db.HealthPersonnel.FirstOrDefaultAsync(h => h.HealthPersonnelId == id, ct);
+        _db.HealthPersonnel.Include(h => h.User).FirstOrDefaultAsync(h => h.HealthPersonnelId == id, ct);
 
     public Task<HealthPersonnel?> GetByUserIdAsync(Guid userId, CancellationToken ct = default) =>
         _db.HealthPersonnel.FirstOrDefaultAsync(h => h.UserId == userId, ct);

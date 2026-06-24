@@ -1,5 +1,7 @@
 using BomberosAPI.API.Common.Extensions;
 using BomberosAPI.Application.Features.Auth;
+using BomberosAPI.Application.Features.HealthPersonnel;
+using BomberosAPI.Application.Features.TraineeFirefighters;
 using BomberosAPI.Application.Features.TrainingSessions;
 using BomberosAPI.Infrastructure;
 using BomberosAPI.Infrastructure.Persistence;
@@ -18,6 +20,8 @@ builder.Services.AddInfrastructure(builder.Configuration);
 // Application services
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<TrainingSessionService>();
+builder.Services.AddScoped<TraineeFirefighterService>();
+builder.Services.AddScoped<HealthPersonnelService>();
 
 // Controllers + FluentValidation
 builder.Services.AddControllers();
