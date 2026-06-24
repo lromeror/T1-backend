@@ -62,9 +62,9 @@ public static class AuthServiceExtensions
             });
 
         services.AddAuthorizationBuilder()
-            .AddPolicy("AdminOnly",          p => p.RequireRole(Roles.Admin))
-            .AddPolicy("HealthPersonnel",    p => p.RequireRole(Roles.HealthPersonnel, Roles.Admin))
-            .AddPolicy("InstructorOrAbove",  p => p.RequireRole(Roles.Instructor, Roles.Admin))
+            .AddPolicy("AdminOnly",          p => p.RequireRole(Roles.Admin, Roles.SystemAdmin))
+            .AddPolicy("HealthPersonnel",    p => p.RequireRole(Roles.Medical, Roles.Admin, Roles.SystemAdmin))
+            .AddPolicy("InstructorOrAbove",  p => p.RequireRole(Roles.Capacitator, Roles.Admin, Roles.SystemAdmin))
             .AddPolicy("Authenticated",      p => p.RequireAuthenticatedUser());
 
         return services;
