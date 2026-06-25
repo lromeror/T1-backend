@@ -91,22 +91,24 @@ public class InvitationService
         EnsurePending(invitation);
         EnsureNotExpired(invitation);
 
+        // Resolve trainee BEFORE committing status change so that if this lookup
+        // fails the invitation does not end up stuck in "Accepted" without a participant.
+        TraineeFirefighter? trainee = null;
+        if (invitation.TrainingSessionId is not null && invitation.TargetUserId is not null)
+            trainee = await _traineeRepo.GetByUserIdAsync(invitation.TargetUserId.Value, ct);
+
         invitation.Status = "Accepted";
         invitation.RespondedAt = DateTime.UtcNow;
         await _repo.UpdateAsync(invitation, ct);
 
-        // If the invitation was for a specific session AND we have a target user → create Participant
-        if (invitation.TrainingSessionId is null || invitation.TargetUserId is null)
+        // Non-trainee users (health personnel, etc.) can accept invitations — no participant record needed.
+        if (trainee is null)
             return null;
-
-        // TargetUserId is a User.user_id — resolve the TraineeFirefighter record that owns it
-        var trainee = await _traineeRepo.GetByUserIdAsync(invitation.TargetUserId.Value, ct)
-            ?? throw new NotFoundException("TraineeFirefighter for user", invitation.TargetUserId.Value);
 
         var participant = new SessionParticipant
         {
             SessionParticipantId = Guid.NewGuid(),
-            TrainingSessionId = invitation.TrainingSessionId.Value,
+            TrainingSessionId = invitation.TrainingSessionId!.Value,
             TraineeFirefighterId = trainee.TraineeFirefighterId,
             InvitationId = invitation.InvitationId,
             ParticipationStatus = "Confirmed",
