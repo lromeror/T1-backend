@@ -23,6 +23,14 @@ public class VitalSignsMeasurementRepository : IVitalSignsMeasurementRepository
             .Where(v => v.SessionParticipantId == sessionParticipantId)
             .ToListAsync(ct);
 
+    public async Task<IEnumerable<VitalSignsMeasurement>> GetByTraineeAsync(Guid traineeFirefighterId, CancellationToken ct = default) =>
+        await (from vs in _db.VitalSignsMeasurements
+               join sp in _db.SessionParticipants on vs.SessionParticipantId equals sp.SessionParticipantId
+               where sp.TraineeFirefighterId == traineeFirefighterId
+               select vs)
+            .AsNoTracking()
+            .ToListAsync(ct);
+
     public async Task AddAsync(VitalSignsMeasurement measurement, CancellationToken ct = default)
     {
         _db.VitalSignsMeasurements.Add(measurement);

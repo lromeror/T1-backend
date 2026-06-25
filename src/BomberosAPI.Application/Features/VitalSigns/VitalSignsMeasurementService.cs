@@ -11,17 +11,20 @@ public class VitalSignsMeasurementService
     private readonly IVitalSignsMeasurementRepository _repo;
     private readonly ISessionParticipantRepository _participantRepo;
     private readonly IHealthPersonnelRepository _hpRepo;
+    private readonly ITrainingSessionRepository _sessionRepo;
     private readonly IValidator<CreateVitalSignsMeasurementRequest> _createValidator;
 
     public VitalSignsMeasurementService(
         IVitalSignsMeasurementRepository repo,
         ISessionParticipantRepository participantRepo,
         IHealthPersonnelRepository hpRepo,
+        ITrainingSessionRepository sessionRepo,
         IValidator<CreateVitalSignsMeasurementRequest> createValidator)
     {
         _repo = repo;
         _participantRepo = participantRepo;
         _hpRepo = hpRepo;
+        _sessionRepo = sessionRepo;
         _createValidator = createValidator;
     }
 
@@ -42,6 +45,47 @@ public class VitalSignsMeasurementService
     {
         var items = await _repo.GetByParticipantAsync(participantId, ct);
         return items.Select(ToDto).ToList();
+    }
+
+    public async Task<IReadOnlyList<VitalSignsHistoryDto>> GetByTraineeAsync(Guid traineeFirefighterId, CancellationToken ct = default)
+    {
+        var participants = (await _participantRepo.GetByTraineeAsync(traineeFirefighterId, ct))
+            .ToDictionary(p => p.SessionParticipantId);
+
+        if (participants.Count == 0) return [];
+
+        var vitals = await _repo.GetByTraineeAsync(traineeFirefighterId, ct);
+
+        var uniqueSessionIds = participants.Values
+            .Select(p => p.TrainingSessionId)
+            .Distinct();
+
+        var sessionTasks = uniqueSessionIds.Select(id => _sessionRepo.GetByIdAsync(id, ct));
+        var sessions = (await Task.WhenAll(sessionTasks))
+            .Where(s => s is not null)
+            .ToDictionary(s => s!.TrainingSessionId);
+
+        return vitals
+            .Where(v => participants.ContainsKey(v.SessionParticipantId))
+            .Select(v =>
+            {
+                var participant = participants[v.SessionParticipantId];
+                sessions.TryGetValue(participant.TrainingSessionId, out var session);
+                return new VitalSignsHistoryDto(
+                    v.VitalSignsMeasurementId,
+                    v.SessionParticipantId,
+                    participant.TrainingSessionId,
+                    session?.Title ?? string.Empty,
+                    session?.ScheduledStart ?? v.TakenAt,
+                    v.HeartRate,
+                    v.SystolicPressure,
+                    v.DiastolicPressure,
+                    v.TemperatureC,
+                    v.Spo2,
+                    v.TakenAt);
+            })
+            .OrderBy(h => h.SessionDate)
+            .ToList();
     }
 
     public async Task<VitalSignsMeasurementDto> CreateAsync(CreateVitalSignsMeasurementRequest request, CancellationToken ct = default)

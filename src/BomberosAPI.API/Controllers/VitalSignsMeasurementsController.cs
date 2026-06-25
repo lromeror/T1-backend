@@ -42,6 +42,14 @@ public class VitalSignsMeasurementsController : ControllerBase
         return Ok(ApiResponse<IReadOnlyList<VitalSignsMeasurementDto>>.Ok(items));
     }
 
+    [HttpGet("by-trainee/{traineeFirefighterId:guid}")]
+    [ProducesResponseType(typeof(ApiResponse<IReadOnlyList<VitalSignsHistoryDto>>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetByTrainee(Guid traineeFirefighterId, CancellationToken ct)
+    {
+        var items = await _service.GetByTraineeAsync(traineeFirefighterId, ct);
+        return Ok(ApiResponse<IReadOnlyList<VitalSignsHistoryDto>>.Ok(items));
+    }
+
     [HttpPost]
     [ProducesResponseType(typeof(ApiResponse<VitalSignsMeasurementDto>), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ApiResponse<object?>), StatusCodes.Status400BadRequest)]
