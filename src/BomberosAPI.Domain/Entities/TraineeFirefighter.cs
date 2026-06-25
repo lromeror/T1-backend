@@ -11,4 +11,6 @@ public class TraineeFirefighter
     public string? EmergencyContactName { get; set; }
     public string? EmergencyContactPhone { get; set; }
     public string? TrainingStatus { get; set; }
+
+    public User? User { get; set; }
 }

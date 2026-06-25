@@ -12,10 +12,10 @@ public class TraineeFirefighterRepository : ITraineeFirefighterRepository
     public TraineeFirefighterRepository(AppDbContext db) => _db = db;
 
     public async Task<IEnumerable<TraineeFirefighter>> GetAllAsync(CancellationToken ct = default) =>
-        await _db.TraineeFirefighters.AsNoTracking().ToListAsync(ct);
+        await _db.TraineeFirefighters.Include(t => t.User).AsNoTracking().ToListAsync(ct);
 
     public Task<TraineeFirefighter?> GetByIdAsync(Guid id, CancellationToken ct = default) =>
-        _db.TraineeFirefighters.FirstOrDefaultAsync(t => t.TraineeFirefighterId == id, ct);
+        _db.TraineeFirefighters.Include(t => t.User).FirstOrDefaultAsync(t => t.TraineeFirefighterId == id, ct);
 
     public Task<TraineeFirefighter?> GetByApplicantCodeAsync(string applicantCode, CancellationToken ct = default) =>
         _db.TraineeFirefighters.FirstOrDefaultAsync(t => t.ApplicantCode == applicantCode, ct);

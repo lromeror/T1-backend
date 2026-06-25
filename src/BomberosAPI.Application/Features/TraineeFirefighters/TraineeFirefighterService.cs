@@ -85,8 +85,9 @@ public class TraineeFirefighterService
     }
 
     private static TraineeFirefighterDto ToDto(TraineeFirefighter t) => new(
-        t.TraineeFirefighterId, t.UserId, t.ApplicantCode,
-        t.BirthDate, t.Sex, t.BloodType,
+        t.TraineeFirefighterId, t.UserId,
+        t.User?.FirstName ?? "", t.User?.LastName ?? "", t.User?.Email ?? "", t.User?.Phone,
+        t.ApplicantCode, t.BirthDate, t.Sex, t.BloodType,
         t.EmergencyContactName, t.EmergencyContactPhone,
         t.TrainingStatus);
 }

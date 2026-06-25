@@ -8,6 +8,7 @@ using BomberosAPI.Application.Features.MedicalHistory;
 using BomberosAPI.Application.Features.Participants;
 using BomberosAPI.Application.Features.Roles;
 using BomberosAPI.Application.Features.TraineeFirefighters;
+using BomberosAPI.Application.Features.TrainingLocations;
 using BomberosAPI.Application.Features.TrainingSessions;
 using BomberosAPI.Application.Features.Users;
 using BomberosAPI.Application.Features.VitalSigns;
@@ -42,6 +43,9 @@ public static class DependencyInjection
         services.AddScoped<ITrainingInstitutionRepository, TrainingInstitutionRepository>();
         services.AddScoped<InstitutionService>();
         services.AddScoped<IValidator<CreateInstitutionRequest>, CreateInstitutionValidator>();
+
+        services.AddScoped<ITrainingLocationRepository, TrainingLocationRepository>();
+        services.AddScoped<TrainingLocationService>();
 
         services.AddScoped<ITraineeFirefighterRepository, TraineeFirefighterRepository>();
         services.AddScoped<TraineeFirefighterService>();

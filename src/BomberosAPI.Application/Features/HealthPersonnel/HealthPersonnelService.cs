@@ -67,10 +67,7 @@ public class HealthPersonnelService
     }
 
     private static HealthPersonnelDto ToDto(HealthPersonnelEntity h) => new(
-        h.HealthPersonnelId,
-        h.UserId,
-        h.Profession,
-        h.Specialty,
-        h.LicenseNumber,
-        h.CanApproveDischarges);
+        h.HealthPersonnelId, h.UserId,
+        h.User?.FirstName ?? "", h.User?.LastName ?? "", h.User?.Email ?? "", h.User?.Phone,
+        h.Profession, h.Specialty, h.LicenseNumber, h.CanApproveDischarges);
 }
