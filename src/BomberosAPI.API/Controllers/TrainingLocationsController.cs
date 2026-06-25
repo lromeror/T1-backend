@@ -21,4 +21,13 @@ public class TrainingLocationsController : ControllerBase
         var locations = await _service.GetAllAsync(ct);
         return Ok(ApiResponse<IReadOnlyList<TrainingLocationDto>>.Ok(locations));
     }
+
+    [HttpGet("{id:guid}")]
+    [ProducesResponseType(typeof(ApiResponse<TrainingLocationDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object?>), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetById(Guid id, CancellationToken ct)
+    {
+        var loc = await _service.GetByIdAsync(id, ct);
+        return Ok(ApiResponse<TrainingLocationDto>.Ok(loc));
+    }
 }
