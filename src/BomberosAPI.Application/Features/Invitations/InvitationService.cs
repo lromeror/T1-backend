@@ -12,6 +12,7 @@ public class InvitationService
 {
     private readonly IInvitationRepository _repo;
     private readonly ISessionParticipantRepository _participantRepo;
+    private readonly ITraineeFirefighterRepository _traineeRepo;
     private readonly IPasswordHasher _hasher;
     private readonly IValidator<CreateInvitationRequest> _createValidator;
     private readonly ICurrentUserService _currentUser;
@@ -19,12 +20,14 @@ public class InvitationService
     public InvitationService(
         IInvitationRepository repo,
         ISessionParticipantRepository participantRepo,
+        ITraineeFirefighterRepository traineeRepo,
         IPasswordHasher hasher,
         IValidator<CreateInvitationRequest> createValidator,
         ICurrentUserService currentUser)
     {
         _repo = repo;
         _participantRepo = participantRepo;
+        _traineeRepo = traineeRepo;
         _hasher = hasher;
         _createValidator = createValidator;
         _currentUser = currentUser;
@@ -96,11 +99,15 @@ public class InvitationService
         if (invitation.TrainingSessionId is null || invitation.TargetUserId is null)
             return null;
 
+        // TargetUserId is a User.user_id — resolve the TraineeFirefighter record that owns it
+        var trainee = await _traineeRepo.GetByUserIdAsync(invitation.TargetUserId.Value, ct)
+            ?? throw new NotFoundException("TraineeFirefighter for user", invitation.TargetUserId.Value);
+
         var participant = new SessionParticipant
         {
             SessionParticipantId = Guid.NewGuid(),
             TrainingSessionId = invitation.TrainingSessionId.Value,
-            TraineeFirefighterId = invitation.TargetUserId.Value,
+            TraineeFirefighterId = trainee.TraineeFirefighterId,
             InvitationId = invitation.InvitationId,
             ParticipationStatus = "Confirmed",
             AttendanceConfirmed = false
