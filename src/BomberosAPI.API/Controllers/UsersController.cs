@@ -19,9 +19,11 @@ public class UsersController : ControllerBase
 
     [HttpGet]
     [ProducesResponseType(typeof(ApiResponse<IReadOnlyList<UserDto>>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetAll(CancellationToken ct)
+    public async Task<IActionResult> GetAll([FromQuery] string? role, CancellationToken ct)
     {
-        var users = await _userService.GetAllAsync(ct);
+        var users = role is not null
+            ? await _userService.GetByRoleAsync(role, ct)
+            : await _userService.GetAllAsync(ct);
         return Ok(ApiResponse<IReadOnlyList<UserDto>>.Ok(users));
     }
 

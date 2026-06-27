@@ -20,6 +20,15 @@ public class UserRepository : IUserRepository
     public Task<bool> ExistsByEmailAsync(string email, CancellationToken ct = default) =>
         _db.Users.AnyAsync(u => u.Email == email, ct);
 
+    public async Task<IEnumerable<User>> GetByRoleAsync(string roleCode, CancellationToken ct = default) =>
+        await (from u in _db.Users
+               join ur in _db.UserRoles on u.UserId equals ur.UserId
+               join r  in _db.Roles     on ur.RoleId equals r.RoleId
+               where r.Code == roleCode && ur.IsActive
+               select u)
+            .AsNoTracking()
+            .ToListAsync(ct);
+
     public async Task AddAsync(User user, CancellationToken ct = default)
     {
         _db.Users.Add(user);

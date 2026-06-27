@@ -12,6 +12,7 @@ public class InvitationService
 {
     private readonly IInvitationRepository _repo;
     private readonly ISessionParticipantRepository _participantRepo;
+    private readonly ITraineeFirefighterRepository _traineeRepo;
     private readonly IPasswordHasher _hasher;
     private readonly IValidator<CreateInvitationRequest> _createValidator;
     private readonly ICurrentUserService _currentUser;
@@ -19,12 +20,14 @@ public class InvitationService
     public InvitationService(
         IInvitationRepository repo,
         ISessionParticipantRepository participantRepo,
+        ITraineeFirefighterRepository traineeRepo,
         IPasswordHasher hasher,
         IValidator<CreateInvitationRequest> createValidator,
         ICurrentUserService currentUser)
     {
         _repo = repo;
         _participantRepo = participantRepo;
+        _traineeRepo = traineeRepo;
         _hasher = hasher;
         _createValidator = createValidator;
         _currentUser = currentUser;
@@ -88,19 +91,25 @@ public class InvitationService
         EnsurePending(invitation);
         EnsureNotExpired(invitation);
 
+        // Resolve trainee BEFORE committing status change so that if this lookup
+        // fails the invitation does not end up stuck in "Accepted" without a participant.
+        TraineeFirefighter? trainee = null;
+        if (invitation.TrainingSessionId is not null && invitation.TargetUserId is not null)
+            trainee = await _traineeRepo.GetByUserIdAsync(invitation.TargetUserId.Value, ct);
+
         invitation.Status = "Accepted";
         invitation.RespondedAt = DateTime.UtcNow;
         await _repo.UpdateAsync(invitation, ct);
 
-        // If the invitation was for a specific session AND we have a target user → create Participant
-        if (invitation.TrainingSessionId is null || invitation.TargetUserId is null)
+        // Non-trainee users (health personnel, etc.) can accept invitations — no participant record needed.
+        if (trainee is null)
             return null;
 
         var participant = new SessionParticipant
         {
             SessionParticipantId = Guid.NewGuid(),
-            TrainingSessionId = invitation.TrainingSessionId.Value,
-            TraineeFirefighterId = invitation.TargetUserId.Value,
+            TrainingSessionId = invitation.TrainingSessionId!.Value,
+            TraineeFirefighterId = trainee.TraineeFirefighterId,
             InvitationId = invitation.InvitationId,
             ParticipationStatus = "Confirmed",
             AttendanceConfirmed = false

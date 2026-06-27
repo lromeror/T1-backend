@@ -8,4 +8,5 @@ namespace BomberosAPI.Domain.Repositories;
 public interface IUserRepository : IRepository<User>
 {
     Task<bool> ExistsByEmailAsync(string email, CancellationToken ct = default);
+    Task<IEnumerable<User>> GetByRoleAsync(string roleCode, CancellationToken ct = default);
 }

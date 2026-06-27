@@ -46,6 +46,26 @@ public class AuthController : ControllerBase
 
         return Ok(ApiResponse<CurrentUserResponse>.Ok(response));
     }
+
+    /// <summary>Genera un token de restablecimiento de contraseña para el email indicado.</summary>
+    [HttpPost("forgot-password")]
+    [ProducesResponseType(typeof(ApiResponse<ForgotPasswordResult>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object?>), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request, CancellationToken ct)
+    {
+        var result = await _authService.RequestPasswordResetAsync(request, ct);
+        return Ok(ApiResponse<ForgotPasswordResult>.Ok(result, "Si el correo está registrado, recibirás las instrucciones."));
+    }
+
+    /// <summary>Restablece la contraseña usando el token generado previamente.</summary>
+    [HttpPost("reset-password")]
+    [ProducesResponseType(typeof(ApiResponse<object?>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object?>), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request, CancellationToken ct)
+    {
+        await _authService.ResetPasswordAsync(request, ct);
+        return Ok(ApiResponse<object?>.Ok(null, "Contraseña actualizada exitosamente."));
+    }
 }
 
 public record CurrentUserResponse(

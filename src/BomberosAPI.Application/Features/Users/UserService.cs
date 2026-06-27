@@ -23,6 +23,12 @@ public class UserService
         return users.Select(ToDto).ToList();
     }
 
+    public async Task<IReadOnlyList<UserDto>> GetByRoleAsync(string roleCode, CancellationToken ct = default)
+    {
+        var users = await _repo.GetByRoleAsync(roleCode, ct);
+        return users.Select(ToDto).ToList();
+    }
+
     public async Task<UserDto> GetByIdAsync(Guid id, CancellationToken ct = default)
     {
         var user = await _repo.GetByIdAsync(id, ct)

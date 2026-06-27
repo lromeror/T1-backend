@@ -19,6 +19,9 @@ public static class AuthServiceExtensions
         var secretKey = configuration["JwtSettings:SecretKey"]
             ?? throw new InvalidOperationException("JwtSettings:SecretKey is not configured.");
 
+        // Without this, .NET remaps "sub" → ClaimTypes.NameIdentifier, breaking FindFirstValue(JwtRegisteredClaimNames.Sub)
+        System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
         services
             .AddAuthentication(o =>
             {

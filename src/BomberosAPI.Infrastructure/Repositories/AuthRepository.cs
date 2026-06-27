@@ -35,4 +35,22 @@ public class AuthRepository : IAuthRepository
         _db.UserCredentials.Update(credential);
         await _db.SaveChangesAsync(ct);
     }
+
+    public Task<PasswordResetToken?> FindValidResetTokenByHashAsync(string tokenHash, CancellationToken ct = default) =>
+        _db.PasswordResetTokens
+           .FirstOrDefaultAsync(t => t.TokenHash == tokenHash
+                                  && t.Status == "pending"
+                                  && t.ExpiresAt > DateTime.UtcNow, ct);
+
+    public async Task AddPasswordResetTokenAsync(PasswordResetToken token, CancellationToken ct = default)
+    {
+        _db.PasswordResetTokens.Add(token);
+        await _db.SaveChangesAsync(ct);
+    }
+
+    public async Task UpdatePasswordResetTokenAsync(PasswordResetToken token, CancellationToken ct = default)
+    {
+        _db.PasswordResetTokens.Update(token);
+        await _db.SaveChangesAsync(ct);
+    }
 }
