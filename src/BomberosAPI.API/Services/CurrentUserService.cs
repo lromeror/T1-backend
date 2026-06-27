@@ -22,7 +22,9 @@ public class CurrentUserService : ICurrentUserService
     {
         get
         {
-            var value = User?.FindFirstValue(JwtRegisteredClaimNames.Sub);
+            // .NET remaps "sub" → ClaimTypes.NameIdentifier by default; check both
+            var value = User?.FindFirstValue(JwtRegisteredClaimNames.Sub)
+                        ?? User?.FindFirstValue(ClaimTypes.NameIdentifier);
             return Guid.TryParse(value, out var id) ? id : Guid.Empty;
         }
     }
