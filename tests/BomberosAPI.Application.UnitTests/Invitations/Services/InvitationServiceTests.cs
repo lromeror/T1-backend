@@ -120,7 +120,9 @@ public class InvitationServiceTests
     {
         var id = Guid.NewGuid();
         var inv = new Invitation { InvitationId = id, Status = "Pending", ExpiresAt = DateTime.UtcNow.AddDays(1), TargetUserId = Guid.NewGuid(), TrainingSessionId = Guid.NewGuid() };
+        var trainee = new TraineeFirefighter { TraineeFirefighterId = Guid.NewGuid(), UserId = inv.TargetUserId!.Value };
         _mockRepo.Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>())).ReturnsAsync(inv);
+        _mockTraineeRepo.Setup(t => t.GetByUserIdAsync(inv.TargetUserId.Value, It.IsAny<CancellationToken>())).ReturnsAsync(trainee);
 
         var result = await _sut.AcceptAsync(id);
 
