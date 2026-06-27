@@ -1,5 +1,7 @@
 # BomberosAPI — Arquitectura del Sistema
 
+> CI configurado con GitHub Actions: build automático en cada push/PR a `main` y `feature/**`.
+
 ## Descripción General
 
 BomberosAPI es un sistema de gestión de entrenamiento para bomberos aprendices. El backend está construido con **.NET 10** usando **Clean Architecture** con **Entity Framework Core** como ORM y **Azure SQL** como base de datos.
