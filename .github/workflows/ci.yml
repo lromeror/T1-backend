@@ -37,3 +37,16 @@ jobs:
             echo "No test projects found, skipping dotnet test."
           fi
         shell: bash
+
+      - name: Code style & analyzer report (non-blocking)
+        if: always()
+        continue-on-error: true
+        run: |
+          echo "## Code style & Roslyn analyzer report" >> "$GITHUB_STEP_SUMMARY"
+          dotnet build BomberosAPI.slnx --no-restore --configuration Release > analyzer-report.txt 2>&1 || true
+          WARN_COUNT=$(grep -c "warning " analyzer-report.txt || true)
+          echo "Total warnings found: $WARN_COUNT" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          grep "warning " analyzer-report.txt >> "$GITHUB_STEP_SUMMARY" || echo "No warnings." >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+        shell: bash
