@@ -1,0 +1,172 @@
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using BomberosAPI.Application.Common.Exceptions;
+using BomberosAPI.Application.Common.Interfaces;
+using BomberosAPI.Application.Features.Invitations;
+using BomberosAPI.Domain.Entities;
+using BomberosAPI.Domain.Repositories;
+using FluentAssertions;
+using FluentValidation;
+using FluentValidation.Results;
+using Moq;
+using Xunit;
+using ValidationException = BomberosAPI.Application.Common.Exceptions.ValidationException;
+
+namespace BomberosAPI.Application.UnitTests.Invitations.Services;
+
+public class InvitationServiceTests
+{
+    private readonly Mock<IInvitationRepository> _mockRepo;
+    private readonly Mock<ISessionParticipantRepository> _mockParticipantRepo;
+    private readonly Mock<IPasswordHasher> _mockHasher;
+    private readonly Mock<IValidator<CreateInvitationRequest>> _mockValidator;
+    private readonly Mock<ICurrentUserService> _mockCurrentUser;
+    private readonly InvitationService _sut;
+
+    public InvitationServiceTests()
+    {
+        _mockRepo = new Mock<IInvitationRepository>();
+        _mockParticipantRepo = new Mock<ISessionParticipantRepository>();
+        _mockHasher = new Mock<IPasswordHasher>();
+        _mockValidator = new Mock<IValidator<CreateInvitationRequest>>();
+        _mockCurrentUser = new Mock<ICurrentUserService>();
+
+        _mockValidator
+            .Setup(v => v.ValidateAsync(It.IsAny<CreateInvitationRequest>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new ValidationResult());
+            
+        _mockCurrentUser.SetupGet(c => c.IsAuthenticated).Returns(true);
+        _mockCurrentUser.SetupGet(c => c.UserId).Returns(Guid.NewGuid());
+        _mockHasher.Setup(h => h.Hash(It.IsAny<string>())).Returns("hashedToken");
+
+        _sut = new InvitationService(
+            _mockRepo.Object, _mockParticipantRepo.Object, _mockHasher.Object, _mockValidator.Object, _mockCurrentUser.Object);
+    }
+
+    [Fact]
+    public async Task GetAllAsync_ReturnsMappedDtos()
+    {
+        var items = new List<Invitation>
+        {
+            new Invitation { InvitationId = Guid.NewGuid(), Status = "Pending" }
+        };
+        _mockRepo.Setup(r => r.GetAllAsync(It.IsAny<CancellationToken>())).ReturnsAsync(items);
+
+        var result = await _sut.GetAllAsync();
+
+        result.Should().NotBeEmpty();
+        result[0].Status.Should().Be("Pending");
+    }
+
+    [Fact]
+    public async Task GetByIdAsync_ExistingId_ReturnsDto()
+    {
+        var id = Guid.NewGuid();
+        var item = new Invitation { InvitationId = id, Status = "Pending" };
+        _mockRepo.Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>())).ReturnsAsync(item);
+
+        var result = await _sut.GetByIdAsync(id);
+
+        result.Should().NotBeNull();
+        result.Status.Should().Be("Pending");
+    }
+
+    [Fact]
+    public async Task CreateAsync_ValidRequest_ReturnsDtoAndToken()
+    {
+        var request = new CreateInvitationRequest(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "test@test.com", DateTime.UtcNow.AddDays(1));
+
+        var result = await _sut.CreateAsync(request);
+
+        result.Should().NotBeNull();
+        result.Invitation.Status.Should().Be("Pending");
+        result.PlainToken.Should().NotBeNullOrWhiteSpace();
+        _mockRepo.Verify(r => r.AddAsync(It.IsAny<Invitation>(), It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task CreateAsync_UnauthenticatedUser_ThrowsUnauthorizedAccessException()
+    {
+        var request = new CreateInvitationRequest(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "test@test.com", DateTime.UtcNow.AddDays(1));
+        _mockCurrentUser.SetupGet(c => c.IsAuthenticated).Returns(false);
+
+        var act = async () => await _sut.CreateAsync(request);
+
+        await act.Should().ThrowAsync<UnauthorizedAccessException>();
+    }
+
+    [Fact]
+    public async Task CreateAsync_InvalidRequest_ThrowsValidationException()
+    {
+        var request = new CreateInvitationRequest(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "test@test.com", DateTime.UtcNow.AddDays(1));
+        var validationResult = new ValidationResult(new[] { new ValidationFailure("TargetEmail", "Invalid") });
+        _mockValidator.Setup(v => v.ValidateAsync(request, It.IsAny<CancellationToken>())).ReturnsAsync(validationResult);
+
+        var act = async () => await _sut.CreateAsync(request);
+        await act.Should().ThrowAsync<ValidationException>();
+    }
+
+    [Fact]
+    public async Task AcceptAsync_ValidPendingInvitation_ChangesStatusToAccepted()
+    {
+        var id = Guid.NewGuid();
+        var inv = new Invitation { InvitationId = id, Status = "Pending", ExpiresAt = DateTime.UtcNow.AddDays(1), TargetUserId = Guid.NewGuid(), TrainingSessionId = Guid.NewGuid() };
+        _mockRepo.Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>())).ReturnsAsync(inv);
+
+        var result = await _sut.AcceptAsync(id);
+
+        inv.Status.Should().Be("Accepted");
+        result.Should().NotBeNull();
+        _mockParticipantRepo.Verify(p => p.AddAsync(It.IsAny<SessionParticipant>(), It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task AcceptAsync_ExpiredInvitation_ThrowsConflictException()
+    {
+        var id = Guid.NewGuid();
+        var inv = new Invitation { InvitationId = id, Status = "Pending", ExpiresAt = DateTime.UtcNow.AddDays(-1) };
+        _mockRepo.Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>())).ReturnsAsync(inv);
+
+        var act = async () => await _sut.AcceptAsync(id);
+
+        await act.Should().ThrowAsync<ConflictException>();
+    }
+    
+    [Fact]
+    public async Task AcceptAsync_AlreadyAccepted_ThrowsConflictException()
+    {
+        var id = Guid.NewGuid();
+        var inv = new Invitation { InvitationId = id, Status = "Accepted", ExpiresAt = DateTime.UtcNow.AddDays(1) };
+        _mockRepo.Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>())).ReturnsAsync(inv);
+
+        var act = async () => await _sut.AcceptAsync(id);
+
+        await act.Should().ThrowAsync<ConflictException>();
+    }
+
+    [Fact]
+    public async Task RejectAsync_Pending_ChangesStatusToRejected()
+    {
+        var id = Guid.NewGuid();
+        var inv = new Invitation { InvitationId = id, Status = "Pending" };
+        _mockRepo.Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>())).ReturnsAsync(inv);
+
+        await _sut.RejectAsync(id);
+
+        inv.Status.Should().Be("Rejected");
+    }
+
+    [Fact]
+    public async Task RevokeAsync_Pending_ChangesStatusToRevoked()
+    {
+        var id = Guid.NewGuid();
+        var inv = new Invitation { InvitationId = id, Status = "Pending" };
+        _mockRepo.Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>())).ReturnsAsync(inv);
+
+        await _sut.RevokeAsync(id);
+
+        inv.Status.Should().Be("Revoked");
+    }
+}
