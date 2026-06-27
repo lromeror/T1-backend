@@ -20,6 +20,7 @@ public class InvitationServiceTests
 {
     private readonly Mock<IInvitationRepository> _mockRepo;
     private readonly Mock<ISessionParticipantRepository> _mockParticipantRepo;
+    private readonly Mock<ITraineeFirefighterRepository> _mockTraineeRepo;
     private readonly Mock<IPasswordHasher> _mockHasher;
     private readonly Mock<IValidator<CreateInvitationRequest>> _mockValidator;
     private readonly Mock<ICurrentUserService> _mockCurrentUser;
@@ -29,6 +30,7 @@ public class InvitationServiceTests
     {
         _mockRepo = new Mock<IInvitationRepository>();
         _mockParticipantRepo = new Mock<ISessionParticipantRepository>();
+        _mockTraineeRepo = new Mock<ITraineeFirefighterRepository>();
         _mockHasher = new Mock<IPasswordHasher>();
         _mockValidator = new Mock<IValidator<CreateInvitationRequest>>();
         _mockCurrentUser = new Mock<ICurrentUserService>();
@@ -36,13 +38,18 @@ public class InvitationServiceTests
         _mockValidator
             .Setup(v => v.ValidateAsync(It.IsAny<CreateInvitationRequest>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new ValidationResult());
-            
+
         _mockCurrentUser.SetupGet(c => c.IsAuthenticated).Returns(true);
         _mockCurrentUser.SetupGet(c => c.UserId).Returns(Guid.NewGuid());
         _mockHasher.Setup(h => h.Hash(It.IsAny<string>())).Returns("hashedToken");
 
         _sut = new InvitationService(
-            _mockRepo.Object, _mockParticipantRepo.Object, _mockHasher.Object, _mockValidator.Object, _mockCurrentUser.Object);
+            _mockRepo.Object,
+            _mockParticipantRepo.Object,
+            _mockTraineeRepo.Object,
+            _mockHasher.Object,
+            _mockValidator.Object,
+            _mockCurrentUser.Object);
     }
 
     [Fact]

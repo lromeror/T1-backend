@@ -20,6 +20,8 @@ public class AuthServiceTests
     private readonly Mock<IPasswordHasher> _mockPasswordHasher;
     private readonly Mock<IJwtTokenService> _mockJwtService;
     private readonly Mock<IValidator<LoginRequest>> _mockValidator;
+    private readonly Mock<IValidator<ForgotPasswordRequest>> _mockForgotValidator;
+    private readonly Mock<IValidator<ResetPasswordRequest>> _mockResetValidator;
     private readonly AuthService _sut; // System Under Test
 
     public AuthServiceTests()
@@ -28,6 +30,8 @@ public class AuthServiceTests
         _mockPasswordHasher = new Mock<IPasswordHasher>();
         _mockJwtService = new Mock<IJwtTokenService>();
         _mockValidator = new Mock<IValidator<LoginRequest>>();
+        _mockForgotValidator = new Mock<IValidator<ForgotPasswordRequest>>();
+        _mockResetValidator = new Mock<IValidator<ResetPasswordRequest>>();
 
         // Configuración por defecto: la validación del request pasa exitosamente
         _mockValidator
@@ -38,7 +42,9 @@ public class AuthServiceTests
             _mockRepo.Object,
             _mockPasswordHasher.Object,
             _mockJwtService.Object,
-            _mockValidator.Object);
+            _mockValidator.Object,
+            _mockForgotValidator.Object,
+            _mockResetValidator.Object);
     }
 
     [Fact]
